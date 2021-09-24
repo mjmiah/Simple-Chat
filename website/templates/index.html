@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+      #messagesBox {
+        display: flex;
+        justify-content: center;
+      }
+      
+      #messages {
+        width: 50%;
+        resize: none;
+        overflow: auto;
+        min-height: 50vh;
+      };
+    </style>
+</head>
+<body>
+    <script type="text/javascript" charset="utf-8">
+      var socket = io();
+      var name;
+      socket.on('connect', function() {
+              name = '';
+          });
+      
+      function userConnect() { //when user inputs their username they connect to the chat
+        name = ($('#userName').val());
+        if (name == '') {
+          alert('Username must not be blank.');
+        } else {
+          socket.send(name + ' has connected');
+        }
+      };
+        
+      socket.on('message', function(msg) {
+          $("#messages").append(msg + '\r\n'); //adds message to chat
+          console.log('I receive message');
+      });
+      
+      function sendMsg() { //sends message to server
+        if (name == '') {
+          alert('Username must not be blank.');
+        } else {
+          socket.send(name + ': ' + $('#myMessage').val());
+          $('#myMessage').val('');        
+        }
+      };
+
+      function enterMsg(e) { //checks if user pressed enter key
+        if (e.keyCode == 13) { //enter key sends the message
+          sendMsg();
+        }
+      };
+
+      function enterName(e) { //checks if user pressed enter key
+        if (e.keyCode == 13) { //enter key sends username
+          userConnect();
+        }
+      };
+
+
+    </script>
+    <h1 align="center">Simple Chat</h1>
+    <h2 align="center">Developed by MJM Apps</h2>
+    <div align="center" id="enterName">
+      <p>Enter your username:</p>
+      <input type="text" id="userName" onkeypress="enterName(event)">
+      <button id="goButton" onclick="userConnect()">Go!</button>
+    </div>
+    <br/>
+    <div id="messagesBox">
+      <textarea readonly id="messages"></textarea>
+    </div>
+    <div align="center" id="enterMsg">
+      <p>Send a message:</p>
+      <input type="text" id="myMessage" style="width: 40%" onkeypress="enterMsg(event)">
+      <button id="sendButton" onclick="sendMsg()">Send</button>    
+    </div>
+</body>
+</body>
+</html>
