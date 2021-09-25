@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+      body {
+        font-size: large;
+      }
+
+      #messagesBox {
+        display: flex;
+        justify-content: center;
+      }
+      
+      #messages {
+        width: 45%;
+        resize: none;
+        overflow: auto;
+        min-height: 50vh;
+        font-size: large;
+      };
+    </style>
+</head>
+<body>
+    <script type="text/javascript" charset="utf-8">
+      var socket = io();
+      var name;
+      socket.on('connect', function() {
+              name = '';
+          });
+      
+      function userConnect() { //when user inputs their username they connect to the chat
+        name = ($('#userName').val());
+        if (name == '') {
+          alert('Username must not be blank.');
+        } else {
+          socket.send(name + ' has connected');
+          scrollMessages();
+        }
+      };
+        
+      socket.on('message', function(msg) {
+          $("#messages").append(msg + '\r\n'); //adds message to chat
+          console.log('I receive message');
+      });
+      
+      function sendMsg() { //sends message to server
+        if (name == '') {
+          alert('Username must not be blank.');
+        } else {
+          socket.send(name + ': ' + $('#myMessage').val());
+          $('#myMessage').val('');     
+          scrollMessages();   
+        }
+      };
+
+      function enterMsg(e) { //checks if user pressed enter key
+        if (e.keyCode == 13) { //enter key sends the message
+          sendMsg();
+        }
+      };
+
+      function enterName(e) { //checks if user pressed enter key
+        if (e.keyCode == 13) { //enter key sends username
+          userConnect();
+        }
+      };
+
+      function scrollMessages() { //scrolls chat to bottom
+        document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight; 
+      };
+
+    </script>
+    <h1 align="center" style="font-size: 300%">Simple Chat</h1>
+    <h2 align="center">Developed by MJM Apps</h2>
+    <div align="center" id="enterName">
+      <p>Enter your username:</p>
+      <input type="text" id="userName" onkeypress="enterName(event)" style="font-size: large">
+      <button id="goButton" onclick="userConnect()">Go!</button>
+    </div>
+    <br/>
+    <div id="messagesBox">
+      <textarea readonly id="messages"></textarea>
+    </div>
+    <div align="center" id="enterMsg">
+      <p>Send a message:</p>
+      <input type="text" id="myMessage" style="width: 40%; font-size: large" onkeypress="enterMsg(event)">
+      <button id="sendButton" onclick="sendMsg()">Send</button>    
+    </div>
+</body>
+</body>
+</html>
