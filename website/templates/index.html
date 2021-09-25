@@ -8,16 +8,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <style>
+      body {
+        font-size: large;
+      }
+
       #messagesBox {
         display: flex;
         justify-content: center;
       }
       
       #messages {
-        width: 50%;
+        width: 45%;
         resize: none;
         overflow: auto;
         min-height: 50vh;
+        font-size: large;
       };
     </style>
 </head>
@@ -35,6 +40,7 @@
           alert('Username must not be blank.');
         } else {
           socket.send(name + ' has connected');
+          scrollMessages();
         }
       };
         
@@ -48,7 +54,8 @@
           alert('Username must not be blank.');
         } else {
           socket.send(name + ': ' + $('#myMessage').val());
-          $('#myMessage').val('');        
+          $('#myMessage').val('');     
+          scrollMessages();   
         }
       };
 
@@ -64,13 +71,16 @@
         }
       };
 
+      function scrollMessages() { //scrolls chat to bottom
+        document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight; 
+      };
 
     </script>
-    <h1 align="center">Simple Chat</h1>
+    <h1 align="center" style="font-size: 300%">Simple Chat</h1>
     <h2 align="center">Developed by MJM Apps</h2>
     <div align="center" id="enterName">
       <p>Enter your username:</p>
-      <input type="text" id="userName" onkeypress="enterName(event)">
+      <input type="text" id="userName" onkeypress="enterName(event)" style="font-size: large">
       <button id="goButton" onclick="userConnect()">Go!</button>
     </div>
     <br/>
@@ -79,7 +89,7 @@
     </div>
     <div align="center" id="enterMsg">
       <p>Send a message:</p>
-      <input type="text" id="myMessage" style="width: 40%" onkeypress="enterMsg(event)">
+      <input type="text" id="myMessage" style="width: 40%; font-size: large" onkeypress="enterMsg(event)">
       <button id="sendButton" onclick="sendMsg()">Send</button>    
     </div>
 </body>
